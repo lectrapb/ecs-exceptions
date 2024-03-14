@@ -1,4 +1,9 @@
 package com.app;
+/**
+ * In this example shows how to manage four types of exception, two are
+ * personalized exception BusinessException and AppException both are child
+ * of Runtime exception
+ */
 
 import com.app.ecs.Ecs;
 import com.app.exception.AppException;
@@ -34,6 +39,6 @@ public class Main {
     }
 
     public static int zeroDivision() throws Exception {
-        return 10 / 0; // Genera un ArithmeticException (división por cero)
+        return 10 / 0;
     }
 }
