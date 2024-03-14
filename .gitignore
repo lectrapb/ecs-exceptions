@@ -1,0 +1,10 @@
+# Archivos generados automáticamente
+target/
+.idea/
+
+# Directorios generados por IDEs
+.vscode/
+.gradle/
+
+#build
+**/build/
