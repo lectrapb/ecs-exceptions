@@ -1,5 +1,7 @@
 # ECS-EXCEPTIONS
+<hr>
 
+![Diagram](./documentation/images/Logo-ecs-logging.png)
 <p> This project implements the standard <a href="https://www.elastic.co/guide/en/ecs-logging/overview/current/intro.html">Elastic Common Schema</a>  to print logs in JSON format 
 it allows perform a better way to track errors in the systems </p> 
 
