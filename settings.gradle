@@ -1,3 +1,4 @@
 rootProject.name = 'ecs'
 include 'basic'
+include 'apiClient'
 

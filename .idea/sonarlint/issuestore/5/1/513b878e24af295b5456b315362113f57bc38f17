@@ -1,0 +1,12 @@
+
+g	java:S112)"FDefine and throw a dedicated exception instead of using a generic one.(ЌЮаѓюяяяя8µќЈЦг1
+e
+java:S3518*"CMake sure this expression can't be zero before doing this division.(Л‰ дыяяяя8ГќЈЦг1
+T
+java:S1854""7Remove this useless assignment to local variable "num".(щІ‰џ8ЖќЈЦг1
+G
+java:S1181#"%Catch Exception instead of Throwable.(А§ќьяяяя8ЛќЈЦг1
+E
+java:S1481""(Remove this unused "num" local variable.(щІ‰џ8МќЈЦг1
+Ћ
+java:S1130)"lRemove the declaration of thrown exception 'java.lang.Exception', as it cannot be thrown from method's body.(ЌЮаѓюяяяя8ПќЈЦг1

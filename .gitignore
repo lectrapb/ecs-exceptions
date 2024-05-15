@@ -1,10 +1,31 @@
 # Archivos generados automáticamente
-target/
-.idea/
+apiClient/target/
+apiClient/idea/
 
 # Directorios generados por IDEs
-.vscode/
-.gradle/
+
+apiClient/gradle/
 
 #build
 **/build/
+
+apiClient/HELP.md
+apiClient/.gradle
+apiClient/build
+apiClient/!gradle/wrapper/gradle-wrapper.jar
+apiClient/**/src/main/**/build/
+apiClient/**/src/test/**/build/
+
+
+
+### IntelliJ IDEA ###
+apiClient/idea
+apiClient/*.iws
+apiClient/*.iml
+apiClient/*.ipr
+apiClient/out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+
+
