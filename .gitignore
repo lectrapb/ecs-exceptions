@@ -1,9 +1,12 @@
+#default 
+.gradle
+.idea
+
 # Archivos generados automáticamente
 apiClient/target/
 apiClient/idea/
 
 # Directorios generados por IDEs
-
 apiClient/gradle/
 
 #build
