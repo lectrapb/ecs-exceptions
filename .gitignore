@@ -1,6 +1,7 @@
 #default 
 .gradle
 .idea
+build
 
 # Archivos generados automáticamente
 apiClient/target/
@@ -22,7 +23,7 @@ apiClient/**/src/test/**/build/
 
 
 ### IntelliJ IDEA ###
-apiClient/idea
+apiClient/.idea
 apiClient/*.iws
 apiClient/*.iml
 apiClient/*.ipr
