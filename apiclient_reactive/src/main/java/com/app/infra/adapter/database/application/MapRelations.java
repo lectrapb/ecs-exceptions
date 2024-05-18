@@ -8,11 +8,12 @@ public final  class MapRelations {
 
     public static RelationshipData toData(Relationship relationship) {
 
-        return  RelationshipData.builder()
-                .cid(relationship.cid())
-                .productId(relationship.productId())
-                .product(relationship.product())
-                .createAt(relationship.creteAt())
-                .build();
+//        return  RelationshipData.builder()
+//                .cid(relationship.cid())
+//                .productId(relationship.productId())
+//                .product(relationship.product())
+//                .createAt(relationship.creteAt())
+//                .build();
+        return  null;
     }
 }

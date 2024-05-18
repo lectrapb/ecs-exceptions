@@ -3,11 +3,16 @@ package com.app.application;
 
 import com.app.domain.model.Relationship;
 import com.app.domain.model.gateway.RelationGateway;
+import com.app.domain.model.valueobject.Cid;
+import com.app.domain.model.valueobject.Product;
+import com.app.domain.model.valueobject.ProductId;
 import com.app.domain.shared.exception.BusinessException;
 import com.app.domain.shared.exception.ConstantSystemException;
 import com.app.shared.UseCase;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
+
+import java.time.Instant;
 
 @UseCase
 @AllArgsConstructor
@@ -22,4 +27,7 @@ public class CreateRelation {
                 .onErrorResume(NullPointerException.class,
                         throwable -> Mono.error(new BusinessException(ConstantSystemException.MISSING_PARAMS_CODE)));
     }
+
+
+
 }

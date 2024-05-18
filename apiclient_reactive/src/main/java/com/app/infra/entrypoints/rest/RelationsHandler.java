@@ -17,13 +17,17 @@ import java.util.Optional;
 public class RelationsHandler {
 
     private CreateRelation createRelation;
+    //private ValidationConsumer validation;
     public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(RelationshipCreateDto.class)
-                .flatMap(reqDto -> createRelation.createRelation(
-                       reqDto.getCid(),
-                       reqDto.getProduct(),
-                       reqDto.getProductId()
-                )).map(Optional::of)
+                .flatMap(reqDto -> {
+                    //validation.user(reqDto.getCid());
+                    return createRelation.createRelation(
+                            reqDto.getCid(),
+                            reqDto.getProduct(),
+                            reqDto.getProductId());
+                        }
+                ).map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .flatMap(voidOptional -> ServerResponse
                         .status(HttpStatus.CREATED)
