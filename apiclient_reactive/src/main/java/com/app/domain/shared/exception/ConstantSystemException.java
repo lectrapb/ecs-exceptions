@@ -5,7 +5,7 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 public enum ConstantSystemException implements ErrorManagement{
 
     MISSING_PARAMS_CODE(HTTP_BAD_REQUEST, "Faltan datos requeridos",
-                        SysCode.BER404_01, "Valor no puese ser nulo para relacion",
+                        SysCode.BER404_01, "Valor no puede ser nulo para relacion",
                         SysCode.BER404_01),
     MISSING_PARAMS_CODE_CID(HTTP_BAD_REQUEST, "Faltan datos requeridos",
             SysCode.BER404_01, "Valor no puse ser nulo para relacion",
@@ -16,6 +16,7 @@ public enum ConstantSystemException implements ErrorManagement{
     private final String errorCode;
     private final String internalMessage;
     private final String logCode;
+
 
 
     ConstantSystemException(Integer status, String message, String errorCode,

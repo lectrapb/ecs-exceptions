@@ -20,9 +20,9 @@ public class Main {
         var appExp = new AppException(ExceptionConstant.MESSAGE_USER_IS_PRESENT,
                 ExceptionConstant.CODE_FAULT_404, "Number 2");
 
-        ecs.handler(businessExp);
-        ecs.handler(appExp);
-
+//        ecs.handler(businessExp);
+//        ecs.handler(appExp);
+//-------------------------------------------------
         try{
             zeroDivision();
         }catch(Exception ex){
