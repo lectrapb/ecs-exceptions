@@ -1,4 +1,4 @@
-package com.app.authorization_reactive.authorization.shared.domain.labels;
+package com.app.authorization_reactive.shared.common.domain.labels;
 
 
 import java.lang.annotation.*;

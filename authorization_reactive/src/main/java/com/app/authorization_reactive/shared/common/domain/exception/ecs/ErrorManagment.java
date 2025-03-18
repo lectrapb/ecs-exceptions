@@ -1,4 +1,4 @@
-package com.app.authorization_reactive.authorization.shared.domain.exception.ecs;
+package com.app.authorization_reactive.shared.common.domain.exception.ecs;
 
 public interface ErrorManagment {
     Integer getStatus();

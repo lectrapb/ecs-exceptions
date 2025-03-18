@@ -1,7 +1,7 @@
-package com.app.authorization_reactive.authorization.shared.domain.exception.ecs;
+package com.app.authorization_reactive.shared.common.domain.exception.ecs;
 
 
-import com.app.authorization_reactive.authorization.shared.domain.exception.ConstantBusinessException;
+import com.app.authorization_reactive.shared.common.domain.exception.ConstantBusinessException;
 import lombok.Builder;
 import lombok.Getter;
 

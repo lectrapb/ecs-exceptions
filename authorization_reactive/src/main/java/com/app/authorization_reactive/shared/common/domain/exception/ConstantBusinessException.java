@@ -1,6 +1,6 @@
-package com.app.authorization_reactive.authorization.shared.domain.exception;
+package com.app.authorization_reactive.shared.common.domain.exception;
 
-import com.app.authorization_reactive.authorization.shared.domain.exception.ecs.ErrorManagment;
+import com.app.authorization_reactive.shared.common.domain.exception.ecs.ErrorManagment;
 
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 

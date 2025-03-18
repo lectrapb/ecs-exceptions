@@ -1,6 +1,6 @@
 package com.app.authorization_reactive.authorization.signup.application;
 
-import com.app.authorization_reactive.authorization.shared.domain.labels.UseCase;
+import com.app.authorization_reactive.shared.common.domain.labels.UseCase;
 import com.app.authorization_reactive.authorization.signup.domain.model.UserSignUp;
 import com.app.authorization_reactive.authorization.signup.domain.model.UserSignUpData;
 import com.app.authorization_reactive.authorization.signup.domain.gateway.UserSignUpStorage;

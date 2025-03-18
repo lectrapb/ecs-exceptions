@@ -1,7 +1,7 @@
 package com.app.authorization_reactive.authorization.signup.domain.value;
 
 
-import com.app.authorization_reactive.authorization.shared.domain.exception.BusinessException;
+import com.app.authorization_reactive.shared.common.domain.exception.BusinessException;
 
 public class UserName {
 
