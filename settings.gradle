@@ -1,4 +1,5 @@
 rootProject.name = 'ecs'
 include 'basic'
 include 'apiclient_reactive'
+include 'authorization_reactive'
 

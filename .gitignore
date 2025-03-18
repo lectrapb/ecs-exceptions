@@ -20,6 +20,13 @@ apiclient_reactive/!gradle/wrapper/gradle-wrapper.jar
 apiclient_reactive/**/src/main/**/build/
 apiclient_reactive/**/src/test/**/build/
 
+authorization_reactive/HELP.md
+authorization_reactive/.gradle
+authorization_reactive/build
+authorization_reactive/!gradle/wrapper/gradle-wrapper.jar
+authorization_reactive/**/src/main/**/build/
+authorization_reactive/**/src/test/**/build/
+
 
 
 ### IntelliJ IDEA ###
@@ -28,6 +35,13 @@ apiclient_reactive/*.iws
 apiclient_reactive/*.iml
 apiclient_reactive/*.ipr
 apiclient_reactive/out/
+
+authorization_reactive.idea
+authorization_reactive/*.iws
+authorization_reactive/*.iml
+authorization_reactive/*.ipr
+authorization_reactive/out/
+
 !**/src/main/**/out/
 !**/src/test/**/out/
 
