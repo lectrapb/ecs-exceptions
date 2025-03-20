@@ -17,10 +17,10 @@ public class SignUp {
     public Mono<Void> execute(UserSignUpData signUpData) {
 
         return Mono.fromCallable(() -> signUpData)
-                .flatMap(userSignUpData -> Mono.just(UserSignUp.of(signUpData.username(),
-                        signUpData.email(),
+                .flatMap(userSignUpData -> Mono.just(UserSignUp.of(userSignUpData.username(),
+                        userSignUpData.email(),
                         userSignUpData.password())))
-                .flatMap(userSignUp -> userSignUpPersist.save(userSignUp));
+                .flatMap(userSignUpPersist::save);
     }
 
 }

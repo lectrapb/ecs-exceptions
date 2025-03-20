@@ -22,8 +22,6 @@ public class SignUpHandler {
                 .then(ServerResponse.ok().bodyValue(new SignUpSuccess("ok")));
     }
 
-
-
 }
 
 @Data
