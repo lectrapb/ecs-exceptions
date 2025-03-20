@@ -2,43 +2,40 @@ package com.app.authorization_reactive.shared.helpers.ecs;
 
 
 import com.app.authorization_reactive.shared.common.domain.exception.ecs.BusinessExceptionECS;
-import com.app.authorization_reactive.shared.helpers.ecs.model.LogException;
+import com.app.authorization_reactive.shared.helpers.ecs.model.LogRecord;
 import com.app.authorization_reactive.shared.helpers.ecs.model.MiddlewareEcsLog;
 import com.app.authorization_reactive.shared.helpers.ecs.model.LoggerEcs;
 
+import java.util.Map;
+
 public class MiddlewareEcsBusiness extends MiddlewareEcsLog {
 
-    private MiddlewareEcsLog next;
+    private MiddlewareEcsLog ecs;
 
     @Override
-    public void handler(Throwable request,
-                        String service) {
-         if(request instanceof BusinessExceptionECS exp){
+    protected void process(Object request, String service) {
+        if(request instanceof BusinessExceptionECS exp){
+            LogRecord.ErrorLog<String, String> errorLog = new LogRecord.ErrorLog<>();
+            errorLog.setType(exp.getConstantBusinessException().getLogCode());
+            errorLog.setDescription(exp.getConstantBusinessException().getInternalMessage());
+            errorLog.setMessage(exp.getConstantBusinessException().getMessage());
+            errorLog.setOptionalInfo(exp.getOptionalInfo());
 
-             var errorLog = LogException.ErrorLog.builder()
-                     .type(exp.getConstantBusinessException().getLogCode())
-                     .description(exp.getConstantBusinessException().getInternalMessage())
-                     .message(exp.getConstantBusinessException().getMessage())
-                     .optionalInfo(exp.getOptionalInfo())
-                     .build();
+            LogRecord<String, String> logExp = new LogRecord<>();
+            logExp.setMessageId(exp.getMetaInfo().getMessageId());
+            logExp.setService(service);
+            logExp.setError(errorLog);
+            logExp.setLevel(LogRecord.Level.ERROR);
 
-             var logExp = LogException.builder()
-                     .messageId(exp.getMetaInfo().getMessageId())
-                     .service(service)
-                     .error(errorLog)
-                     .level(LogException.Level.ERROR)
-                     .build();
-
-             LoggerEcs.print(logExp);
-
-         }else if(next != null){
-             next.handler(request, service);
-         }
+            LoggerEcs.print(logExp);
+        } else if(ecs != null){
+            ecs.handle(request, service);
+        }
     }
 
     @Override
     public MiddlewareEcsLog setNext(MiddlewareEcsLog next) {
-        this.next = next;
+        this.ecs = next;
         return this;
     }
 }

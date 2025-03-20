@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -19,54 +18,52 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class LogException implements Serializable {
-
+public class LogRecord<T, R> {
 
     public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss:SSSS";
 
     @Builder.Default
     private String messageId = UUID.randomUUID().toString();
     @Builder.Default
-    private String date =  currentDate();
+    private String date = currentDate();
     private String service;
     private Level level;
-    private ErrorLog error;
+    private ErrorLog<T, R> error;
 
-    private static String currentDate(){
+    private static String currentDate() {
         var date = LocalDateTime.now(ZoneOffset.of("-05:00"));
         return date.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
     public String toJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try{
-            return  objectMapper.writeValueAsString(this);
-
-        }catch (JsonProcessingException ex){
+        var objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException ex) {
             return "{\"error:\" \"json conversion fail\"}";
         }
-
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class ErrorLog implements Serializable{
+    public static class ErrorLog<T, R> {
+
         private String type;
         private String message;
         private String description;
-        private Map optionalInfo;
+        private Map<T, R> optionalInfo;
     }
 
-    public enum Level implements Serializable{
+    public enum Level {
         DEBUG("DEBUG"),
         INFO("INFO"),
         WARNING("WARNING"),
         ERROR("ERROR"),
         FATAL("FATAL");
 
-        private String value;
+        private final String value;
 
         Level(String value) {
             this.value = value;
@@ -77,9 +74,3 @@ public class LogException implements Serializable {
         }
     }
 }
-
-
-
-
-
-

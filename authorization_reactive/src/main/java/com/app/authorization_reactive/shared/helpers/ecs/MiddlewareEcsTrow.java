@@ -1,39 +1,37 @@
 package com.app.authorization_reactive.shared.helpers.ecs;
 
 
-import com.app.authorization_reactive.shared.helpers.ecs.model.LogException;
+import com.app.authorization_reactive.shared.helpers.ecs.model.LogRecord;
 import com.app.authorization_reactive.shared.helpers.ecs.model.LoggerEcs;
 import com.app.authorization_reactive.shared.helpers.ecs.model.MiddlewareEcsLog;
 
 public class MiddlewareEcsTrow extends MiddlewareEcsLog {
 
-    private MiddlewareEcsLog next;
+    private MiddlewareEcsLog ecs;
+
     @Override
-    public void handler(Throwable request,
-                        String service) {
-         if(request != null){
+    protected void process(Object request, String service) {
+        if(request != null){
+            var exp  = (Throwable) request;
+            LogRecord.ErrorLog<String, String> errorLog = new LogRecord.ErrorLog<>();
+            errorLog.setType(exp.getClass().getName());
+            errorLog.setDescription(exp.getMessage());
+            errorLog.setMessage(exp.getMessage());
 
-             var errorLog = LogException.ErrorLog.builder()
-                     .type( request.getClass().getName())
-                     .description(  request.getMessage())
-                     .message(request.getMessage())
-                     .build();
-             var logExp = LogException.builder()
-                     .service(service)
-                     .error(errorLog)
-                     .level(LogException.Level.FATAL)
-                     .build();
-             LoggerEcs.print(logExp);
-         }else if(next != null){
-             next.handler(request, service);
-         }
+            LogRecord<String, String> logExp = new LogRecord<>();
+            logExp.setService(service);
+            logExp.setError(errorLog);
+            logExp.setLevel(LogRecord.Level.FATAL);
+
+            LoggerEcs.print(logExp);
+        } else if(ecs != null){
+            ecs.handle(null, service);
+        }
     }
-
-
 
     @Override
     public MiddlewareEcsLog setNext(MiddlewareEcsLog next) {
-        this.next = next;
+        this.ecs = next;
         return this;
     }
 }
