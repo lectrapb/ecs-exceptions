@@ -28,20 +28,6 @@ public final class Ecs {
         return Mono.empty();
     }
 
-//    public static void buildRequest(Map<String, Object> requestInfo, String service) {
-//        MiddlewareEcsLog ecs = build();
-//        if (ecs instanceof MiddlewareEcsRequest requestLogger) {
-//            requestLogger.handle(requestInfo, service);
-//        }
-//    }
-//
-//    public static void buildResponse(Map<String, Object> responseInfo, String service) {
-//        MiddlewareEcsLog ecs = build();
-//        if (ecs instanceof MiddlewareEcsResponse responseLogger) {
-//            responseLogger.handle(responseInfo, service);
-//        }
-//    }
-
     private Ecs() {
     }
 }

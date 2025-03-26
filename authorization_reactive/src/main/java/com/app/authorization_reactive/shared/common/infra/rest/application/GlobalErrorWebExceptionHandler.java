@@ -35,7 +35,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private Mono<ServerResponse> renderException(ServerRequest serverRequest) {
 
         return accessError(serverRequest)
-                .flatMap(throwable -> Ecs.build(throwable,"ms_payment_service")) //line to add Logs ECS
+                .flatMap(throwable -> Ecs.build(throwable,"ms_authorization_reactive"))
                 .flatMap(Mono::error)
                 .onErrorResume(BusinessException.class, this::businessError  )
                 .onErrorResume(this::unknownError)
@@ -44,7 +44,6 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     public Mono<ServerResponse> businessError(BusinessException exception) {
-
         return  ServerResponse
                 .status(HttpStatus.CONFLICT)
                 .body(Mono.just(RestResponse.error(exception)),

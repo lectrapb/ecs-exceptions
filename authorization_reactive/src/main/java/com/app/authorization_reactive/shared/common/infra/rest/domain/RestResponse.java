@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class RestResponse {
 
-    private static final String API_PATH = "/api/monetary_limit";
+    private static final String API_PATH = "/api/authorization_reactive";
     private static final String YYYY_MM_DD = "yyyy/MM/dd";
     private Meta meta;
     private ErrorApi error;

@@ -1,9 +1,12 @@
 package com.app.authorization_reactive.shared.common.infra.rest.application;
 
-import com.app.authorization_reactive.shared.helpers.ecs.model.LogMetricRequest;
+import com.app.authorization_reactive.shared.common.infra.rest.domain.RequestLoggingDecorator;
 import com.app.authorization_reactive.shared.helpers.ecs.Ecs;
+import com.app.authorization_reactive.shared.helpers.ecs.model.LogMetricRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -11,6 +14,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.annotation.NonNull;
 
 import java.nio.charset.StandardCharsets;
@@ -19,59 +23,71 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class LoggingWebHandler implements WebFilter {
-    private static final String SERVICE_NAME = "AuthorizationReactive";
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+	private static final String SERVICE_NAME = "ms_authorization_reactive";
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final Set<String> SENSITIVE_HEADERS = Set.of(
-            "Authorization", "Cookie", "Set-Cookie", "X-API-Key"
-    );
+	public static final String RAW_BODY = "raw_body";
+	public static final String DELIMITER = ",";
+	public static final String CONSUMER_ACRONYM = "consumer-acronym";
+	public static final String MESSAGE_ID = "message-id";
 
-    @Override
-    @NonNull
-    public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
-        return DataBufferUtils.join(exchange.getRequest().getBody())
-                .flatMap(dataBuffer -> {
-                    String requestBody = extractBody(dataBuffer);
-                    String sanitizedBody = DataSanitizer.sanitize(requestBody);
-                    return logRequest(exchange.getRequest(), sanitizedBody)
-                            .then(chain.filter(exchange));
-                });
-    }
+	private static final Set<String> SENSITIVE_HEADERS = Set.of(
+		"Authorization", "Cookie", "Set-Cookie", "X-API-Key"
+	);
 
-    private String extractBody(DataBuffer dataBuffer) {
-        byte[] bytes = new byte[dataBuffer.readableByteCount()];
-        dataBuffer.read(bytes);
-        DataBufferUtils.release(dataBuffer);
-        return new String(bytes, StandardCharsets.UTF_8).trim();
-    }
+	@Override
+	@NonNull
+	public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
+		DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
+		return logRequestBody(exchange)
+			.flatMap(requestBody -> {
+				ServerHttpRequest decoratedRequest = new RequestLoggingDecorator(
+					exchange.getRequest(), bufferFactory, requestBody);
 
-    private Mono<Void> logRequest(ServerHttpRequest request, String sanitizedBody) {
-        var requestInfo = new LogMetricRequest();
-        requestInfo.setMethod(request.getMethod().name());
-        requestInfo.setUrl(request.getURI().getPath());
-        requestInfo.setBody(parseToMap(sanitizedBody));
+				return chain.filter(exchange.mutate().request(decoratedRequest).build())
+					.then(Mono.defer(() -> logRequest(exchange.getRequest(), requestBody)));
+			});
+	}
 
-        Map<String, String> headers = new HashMap<>();
-        request.getHeaders().forEach((key, value) -> {
-            if (!SENSITIVE_HEADERS.contains(key)) {
-                headers.put(key, String.join(",", value));
-            } else {
-                headers.put(key, DataSanitizer.REPLACEMENT);
-            }
-        });
+	private Mono<String> logRequestBody(ServerWebExchange exchange) {
+		return DataBufferUtils.join(exchange.getRequest().getBody())
+			.publishOn(Schedulers.boundedElastic())
+			.map(dataBuffer -> {
+				byte[] bytes = new byte[dataBuffer.readableByteCount()];
+				dataBuffer.read(bytes);
+				DataBufferUtils.release(dataBuffer);
+				return new String(bytes, StandardCharsets.UTF_8);
+			});
+	}
 
-        requestInfo.setConsumer(headers.get("consumer-acronym"));
-        requestInfo.setMessageId(headers.get("message-id"));
+	private Mono<Void> logRequest(ServerHttpRequest request, String requestBody) {
+		var requestInfo = new LogMetricRequest();
+		requestInfo.setMethod(request.getMethod().name());
+		requestInfo.setUrl(request.getURI().getPath());
+		var body  = DataSanitizer.sanitize(requestBody);
+		requestInfo.setBody(parseToMap(body));
 
-        return Ecs.build(requestInfo, SERVICE_NAME);
-    }
+		Map<String, String> headers = new HashMap<>();
+		request.getHeaders().forEach((key, value) -> {
+			if (!SENSITIVE_HEADERS.contains(key)) {
+				headers.put(key, String.join(DELIMITER, value));
+			} else {
+				headers.put(key, DataSanitizer.REPLACEMENT);
+			}
+		});
 
-    private Map<String, String> parseToMap(String body) {
-        try {
-            return objectMapper.readValue(body, Map.class);
-        } catch (Exception e) {
-            return Map.of("raw_body", body);
-        }
-    }
+		requestInfo.setConsumer(headers.get(CONSUMER_ACRONYM));
+		requestInfo.setMessageId(headers.get(MESSAGE_ID));
+		return Ecs.build(requestInfo, SERVICE_NAME);
+	}
+
+	private Map<String, String> parseToMap(String body) {
+		try {
+			return objectMapper.readValue(body, Map.class);
+		} catch (Exception e) {
+			return Map.of(RAW_BODY, body);
+		}
+	}
 }

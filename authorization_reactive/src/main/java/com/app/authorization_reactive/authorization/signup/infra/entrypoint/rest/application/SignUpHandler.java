@@ -18,6 +18,7 @@ public class SignUpHandler {
     public Mono<ServerResponse> create(ServerRequest request) {
 
         return  request.bodyToMono(UserSignUpData.class)
+                .map( body -> body)
                 .flatMap(signUp::execute)
                 .then(ServerResponse.ok().bodyValue(new SignUpSuccess("ok")));
     }
