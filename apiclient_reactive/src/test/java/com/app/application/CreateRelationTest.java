@@ -1,8 +1,8 @@
 package com.app.application;
 
-import com.app.domain.model.Relationship;
-import com.app.domain.model.gateway.RelationGateway;
-import com.app.domain.shared.exception.BusinessException;
+import com.app.createtrustrelation.application.CreateTrustRelation;
+import com.app.createtrustrelation.domain.gateway.TrustRelationGateway;
+import com.app.shared.common.domain.exceptions.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -14,13 +14,13 @@ import static org.mockito.Mockito.when;
 
 class CreateRelationTest {
 
-    private  RelationGateway repository;
-    private  CreateRelation useCase;
+    private TrustRelationGateway repository;
+    private CreateTrustRelation useCase;
 
     @BeforeEach
     void setUp() {
-        repository = mock(RelationGateway.class);
-        useCase = new CreateRelation(repository);
+        repository = mock(TrustRelationGateway.class);
+        useCase = new CreateTrustRelation(repository);
     }
 
     @Test
