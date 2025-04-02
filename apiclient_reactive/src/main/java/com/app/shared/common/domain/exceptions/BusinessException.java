@@ -1,19 +1,21 @@
 package com.app.shared.common.domain.exceptions;
 
-public class BusinessException extends  RuntimeException{
+import com.app.shared.common.domain.exceptions.ecs.BusinessExceptionECS;
+
+public class BusinessException extends BusinessExceptionECS {
 
     private String customMjs;
 
-    private final ConstantSystemException systemException;
+    private final ConstantBusinessException businessException;
 
-    public BusinessException(ConstantSystemException systemException) {
+    public BusinessException(ConstantBusinessException systemException) {
         super(systemException.getMessage());
-        this.systemException = systemException;
+        this.businessException = systemException;
     }
 
-    public BusinessException(ConstantSystemException systemException, String customMjs) {
+    public BusinessException(ConstantBusinessException systemException, String customMjs) {
         super(systemException.getMessage());
-        this.systemException = systemException;
+        this.businessException = systemException;
         this.customMjs = customMjs;
     }
 }

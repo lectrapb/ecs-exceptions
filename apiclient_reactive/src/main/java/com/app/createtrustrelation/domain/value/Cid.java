@@ -1,7 +1,7 @@
 package com.app.createtrustrelation.domain.value;
 
 import com.app.shared.common.domain.exceptions.BusinessException;
-import com.app.shared.common.domain.exceptions.ConstantSystemException;
+import com.app.shared.common.domain.exceptions.ConstantBusinessException;
 
 public class Cid {
 
@@ -10,7 +10,7 @@ public class Cid {
     public Cid(String value) {
 
         if(value == null){
-            throw new BusinessException(ConstantSystemException.MISSING_PARAMS_CODE_CID);
+            throw new BusinessException(ConstantBusinessException.MISSING_PARAMS_CODE_CID);
         }
         this.value = value;
     }
