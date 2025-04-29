@@ -51,9 +51,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     public Mono<ServerResponse> unknownError(Throwable exception) {
-
         return  ServerResponse
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(Mono.just(exception.getCause()), String.class);
     }
 

@@ -1,25 +1,25 @@
 package com.app.authorization_reactive.shared.common.infra.rest.application;
 
 import com.app.authorization_reactive.shared.common.infra.rest.domain.RequestLoggingDecorator;
+import com.app.authorization_reactive.shared.common.infra.rest.domain.ResponseLoggingDecorator;
 import com.app.authorization_reactive.shared.helpers.ecs.Ecs;
 import com.app.authorization_reactive.shared.helpers.ecs.model.LogMetricRequest;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.util.annotation.NonNull;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Component
@@ -41,43 +41,46 @@ public class LoggingWebHandler implements WebFilter {
 	@NonNull
 	public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
 		DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
-		return logRequestBody(exchange)
-			.flatMap(requestBody -> {
-				ServerHttpRequest decoratedRequest = new RequestLoggingDecorator(
-					exchange.getRequest(), bufferFactory, requestBody);
+		RequestLoggingDecorator decoratedRequest = new RequestLoggingDecorator(
+			exchange.getRequest(), bufferFactory);
 
-				return chain.filter(exchange.mutate().request(decoratedRequest).build())
-					.then(Mono.defer(() -> logRequest(exchange.getRequest(), requestBody)));
-			});
+		ResponseLoggingDecorator decoratedResponse = new ResponseLoggingDecorator(
+			exchange.getResponse(), bufferFactory
+		);
+
+		ServerWebExchange mutatedExchange = exchange
+			.mutate()
+			.request(decoratedRequest)
+			.response(decoratedResponse)
+			.build();
+
+		return chain.filter(mutatedExchange)
+			.then(Mono.defer(() -> logRequest(decoratedRequest, decoratedResponse)));
 	}
 
-	private Mono<String> logRequestBody(ServerWebExchange exchange) {
-		return DataBufferUtils.join(exchange.getRequest().getBody())
-			.publishOn(Schedulers.boundedElastic())
-			.map(dataBuffer -> {
-				byte[] bytes = new byte[dataBuffer.readableByteCount()];
-				dataBuffer.read(bytes);
-				DataBufferUtils.release(dataBuffer);
-				return new String(bytes, StandardCharsets.UTF_8);
-			});
-	}
-
-	private Mono<Void> logRequest(ServerHttpRequest request, String requestBody) {
+	private Mono<Void> logRequest(RequestLoggingDecorator decoratedRequest,
+								  ResponseLoggingDecorator decoratedResponse) {
 		var requestInfo = new LogMetricRequest();
-		requestInfo.setMethod(request.getMethod().name());
-		requestInfo.setUrl(request.getURI().getPath());
-		var body  = DataSanitizer.sanitize(requestBody);
-		requestInfo.setBody(parseToMap(body));
+		HttpStatus status = (HttpStatus) Objects.requireNonNull(decoratedResponse.getStatusCode());
+		requestInfo.setResponseCode(status.value());
+		requestInfo.setResponseResult(status.getReasonPhrase());
+		requestInfo.setMethod(decoratedRequest.getMethod().name());
+		requestInfo.setUrl(decoratedRequest.getURI().getPath());
+
+		String sanitizedRequest = DataSanitizer.sanitize(decoratedRequest.getBodyAsString());
+		String sanitizedResponse = DataSanitizer.sanitize(decoratedResponse.getBodyAsString());
+
+		requestInfo.setRequestBody(parseToMap(sanitizedRequest));
+		requestInfo.setResponseBody(parseToMap(sanitizedResponse));
 
 		Map<String, String> headers = new HashMap<>();
-		request.getHeaders().forEach((key, value) -> {
+		decoratedRequest.getHeaders().forEach((key, value) -> {
 			if (!SENSITIVE_HEADERS.contains(key)) {
 				headers.put(key, String.join(DELIMITER, value));
 			} else {
 				headers.put(key, DataSanitizer.REPLACEMENT);
 			}
 		});
-
 		requestInfo.setConsumer(headers.get(CONSUMER_ACRONYM));
 		requestInfo.setMessageId(headers.get(MESSAGE_ID));
 		return Ecs.build(requestInfo, SERVICE_NAME);

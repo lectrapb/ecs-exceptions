@@ -12,9 +12,12 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogMetricRequest {
+    private String messageId;
+    private String consumer;
+    private String responseResult;
+    private Integer responseCode;
+    private Map<String, String> requestBody;
+    private Map<String, String> responseBody;
     private String method;
     private String url;
-    private Map<String, String> body;
-    private String consumer;
-    private String messageId;
 }

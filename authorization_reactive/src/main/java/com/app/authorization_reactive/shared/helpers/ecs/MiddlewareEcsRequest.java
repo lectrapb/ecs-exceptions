@@ -19,17 +19,24 @@ public class MiddlewareEcsRequest extends MiddlewareEcsLog {
             logRecord.setLevel(LogRecord.Level.INFO);
             logRecord.setConsumer(requestInfo.getConsumer());
 
-            LogMetrics.AdditionalInfo<String, String> additionalInfo = new LogMetrics.AdditionalInfo<>();
-            additionalInfo.setRequestBody(requestInfo.getBody());
-            additionalInfo.setMethod(requestInfo.getMethod());
-            additionalInfo.setUri(requestInfo.getUrl());
-
+            LogMetrics.AdditionalInfo<String, String> additionalInfo = buildAdditionalInfo(requestInfo);
             logRecord.setAdditionalInfo(additionalInfo);
 
             LoggerEcs.print(logRecord);
         } else if(ecs != null){
             ecs.handle(request, service);
         }
+    }
+
+    private LogMetrics.AdditionalInfo<String, String> buildAdditionalInfo(LogMetricRequest requestInfo) {
+        LogMetrics.AdditionalInfo<String, String> additionalInfo = new LogMetrics.AdditionalInfo<>();
+        additionalInfo.setRequestBody(requestInfo.getRequestBody());
+        additionalInfo.setResponseBody(requestInfo.getResponseBody());
+        additionalInfo.setResponseResult(requestInfo.getResponseResult());
+        additionalInfo.setResponseCode(String.valueOf(requestInfo.getResponseCode()));
+        additionalInfo.setMethod(requestInfo.getMethod());
+        additionalInfo.setUri(requestInfo.getUrl());
+        return additionalInfo;
     }
 
     @Override
