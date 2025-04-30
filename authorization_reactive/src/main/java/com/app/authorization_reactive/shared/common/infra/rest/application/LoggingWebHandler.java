@@ -66,21 +66,27 @@ public class LoggingWebHandler implements WebFilter {
 		requestInfo.setMethod(decoratedRequest.getMethod().name());
 		requestInfo.setUrl(decoratedRequest.getURI().getPath());
 
-		var sensitiveFields = sensitiveDataConfig.getSensitiveFields();
-		var sensitivePiiPatterns = sensitiveDataConfig.getPiiPatterns();
-		var replacement = sensitiveDataConfig.getReplacement();
+		var sensitiveRequestFields = sensitiveDataConfig.getSensitiveRequestFields();
+		var sensitiveRequestPatterns = sensitiveDataConfig.getSensitiveRequestPatterns();
+		var sensitiveRequestReplacement = sensitiveDataConfig.getSensitiveRequestReplacement();
+
+		var sensitiveResponseFields = sensitiveDataConfig.getSensitiveResponseFields();
+		var sensitiveResponsePatterns = sensitiveDataConfig.getSensitiveResponsePatterns();
+		var sensitiveResponseReplacement = sensitiveDataConfig.getSensitiveResponseReplacement();
 
 		String sanitizedRequest = DataSanitizer.sanitize(
-			decoratedRequest.getBodyAsString(), sensitiveFields, sensitivePiiPatterns, replacement);
+			decoratedRequest.getBodyAsString(), sensitiveRequestFields, sensitiveRequestPatterns,
+			sensitiveRequestReplacement);
 		String sanitizedResponse = DataSanitizer.sanitize(
-			decoratedResponse.getBodyAsString(), sensitiveFields, sensitivePiiPatterns, replacement);
+			decoratedResponse.getBodyAsString(), sensitiveResponseFields, sensitiveResponsePatterns,
+			sensitiveResponseReplacement);
 
 		requestInfo.setRequestBody(parseToMap(sanitizedRequest));
 		requestInfo.setResponseBody(parseToMap(sanitizedResponse));
 
 		Map<String, String> headers = DataSanitizer.sanitizeHeaders(
-			decoratedRequest.getHeaders(), sensitiveDataConfig.getSensitiveHeaders(),
-			SensitiveDataConfig.HEADER_DELIMITER, replacement);
+			decoratedRequest.getHeaders(), sensitiveDataConfig.getSensitiveRequestHeaders(),
+			SensitiveDataConfig.HEADER_DELIMITER, sensitiveRequestReplacement);
 		requestInfo.setConsumer(headers.get(CONSUMER_ACRONYM));
 		requestInfo.setMessageId(headers.get(MESSAGE_ID));
 		return Ecs.build(requestInfo, SERVICE_NAME);

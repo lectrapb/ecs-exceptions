@@ -5,7 +5,6 @@ import com.app.authorization_reactive.authorization.signup.domain.model.UserSign
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -26,11 +25,11 @@ public class SignUpHandler {
                 .then(ServerResponse.ok().bodyValue(new SignUpSuccess("ok")));
     }
 
-    public Mono<ServerResponse> create2(ServerRequest request) {
+    public Mono<ServerResponse> test(ServerRequest request) {
         return  request.bodyToMono(UserSignUpData.class)
             .map( body -> body)
             .flatMap(signUp::execute)
-            .then(ServerResponse.status(HttpStatus.CREATED).bodyValue(new SignUpSuccess("created")));
+            .then(ServerResponse.status(HttpStatus.CREATED).bodyValue(new SignUpSuccess("test")));
     }
 
 }
@@ -43,6 +42,8 @@ class SignUpSuccess{
     private String accessKey;
     private String secret;
     private String token;
+    private Double number;
+    private String documentNumber;
     private String other;
     private Boolean isValid;
     private List<Credential> credentials;
@@ -55,6 +56,8 @@ class SignUpSuccess{
         this.secret = message;
         this.token = message;
         this.isValid = true;
+        this.number = Double.valueOf("1000.00");
+        this.documentNumber = "1234567890";
         this.other = null;
         this.credentials = List.of( new Credential(1L, message));
     }
