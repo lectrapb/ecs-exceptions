@@ -17,4 +17,9 @@ public class SignUpUserRouter {
     public RouterFunction<ServerResponse> routes(SignUpHandler handler){
         return route(POST("/api/v1/signUp"), handler::create);
     }
+
+    @Bean(name = "signUpUserRouterFunction2")
+    public RouterFunction<ServerResponse> routes2(SignUpHandler handler){
+        return route(POST("/api/v1/signUp2"), handler::create2);
+    }
 }

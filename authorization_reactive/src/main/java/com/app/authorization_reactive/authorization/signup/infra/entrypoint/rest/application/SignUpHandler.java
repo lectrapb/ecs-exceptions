@@ -4,6 +4,8 @@ import com.app.authorization_reactive.authorization.signup.application.SignUp;
 import com.app.authorization_reactive.authorization.signup.domain.model.UserSignUpData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,11 +20,17 @@ public class SignUpHandler {
     private final SignUp signUp;
 
     public Mono<ServerResponse> create(ServerRequest request) {
-
         return  request.bodyToMono(UserSignUpData.class)
                 .map( body -> body)
                 .flatMap(signUp::execute)
                 .then(ServerResponse.ok().bodyValue(new SignUpSuccess("ok")));
+    }
+
+    public Mono<ServerResponse> create2(ServerRequest request) {
+        return  request.bodyToMono(UserSignUpData.class)
+            .map( body -> body)
+            .flatMap(signUp::execute)
+            .then(ServerResponse.status(HttpStatus.CREATED).bodyValue(new SignUpSuccess("created")));
     }
 
 }
