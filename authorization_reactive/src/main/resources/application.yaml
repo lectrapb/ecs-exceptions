@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: "ms_rest_reactive"
+  ecs:
+    logs:
+      response:
+        replacement: '****'
+        delimiter: '\|'
+        fields: ''
+        patterns: ''
+        show: true
+      request:
+        replacement: 'xxxx'
+        patterns: ''
+        delimiter: '\|'
+        fields: ''
+        allowHeaders: 'message-id|consumer-acronym|aid-creator'
+        show: true

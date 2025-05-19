@@ -2,7 +2,6 @@ package com.app.authorization_reactive.shared.common.infra.rest.application;
 
 
 import com.app.authorization_reactive.shared.common.domain.exception.BusinessException;
-import com.app.authorization_reactive.shared.helpers.ecs.Ecs;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -11,7 +10,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.*;
+import org.springframework.web.reactive.function.server.RequestPredicates;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import com.app.authorization_reactive.shared.common.infra.rest.domain.RestResponse;
 
@@ -31,13 +34,10 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         return RouterFunctions.route(RequestPredicates.all(), this::renderException);
     }
 
-
     private Mono<ServerResponse> renderException(ServerRequest serverRequest) {
-
         return accessError(serverRequest)
-                .flatMap(throwable -> Ecs.build(throwable,"ms_payment_service")) //line to add Logs ECS
                 .flatMap(Mono::error)
-                .onErrorResume(BusinessException.class, this::businessError  )
+                .onErrorResume(BusinessException.class, this::businessError)
                 .onErrorResume(this::unknownError)
                 .cast(ServerResponse.class);
 
