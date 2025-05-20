@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 
 @Component
-@Order(-2)
+//@Order(-2)
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler{
 
     public GlobalErrorWebExceptionHandler(ErrorAttributes errorAttributes,

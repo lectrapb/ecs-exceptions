@@ -18,20 +18,18 @@ public class RelationsHandler {
 
     private CreateTrustRelation createRelation;
     //private ValidationConsumer validation;
+
     public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(RelationshipCreateDto.class)
-                .flatMap(reqDto -> {
-                    //validation.user(reqDto.getCid());
-                    return createRelation.createRelation(
+                .flatMap(reqDto -> createRelation.createRelation(
                             reqDto.getCid(),
                             reqDto.getProduct(),
-                            reqDto.getProductId());
-                        }
+                            reqDto.getProductId())
                 ).map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .flatMap(voidOptional -> ServerResponse
                         .status(HttpStatus.CREATED)
-                        .body(Mono.just(""), String.class));
+                        .body(Mono.just("Relation Created"), String.class));
     }
 }
 
