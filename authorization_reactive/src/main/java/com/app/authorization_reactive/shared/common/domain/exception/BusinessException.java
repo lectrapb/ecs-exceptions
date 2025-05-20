@@ -1,6 +1,6 @@
 package com.app.authorization_reactive.shared.common.domain.exception;
 
-import co.com.bancolombia.model.exception.BusinessExceptionECS;
+import com.app.ecs.model.management.BusinessExceptionECS;
 
 public class BusinessException extends BusinessExceptionECS {
 

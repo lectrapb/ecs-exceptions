@@ -1,6 +1,6 @@
 package com.app.authorization_reactive.shared.common.domain.exception;
 
-import co.com.bancolombia.model.exception.ErrorManagement;
+import com.app.ecs.model.management.ErrorManagement;
 
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 
