@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: "ms_rest_reactive"
+adapter:
+  ecs:
+    logs:
+      request:
+        replacement: ""
+        patterns: ""
+        delimiter: "\\|"
+        fields: ""
+        allow-headers: "message-id|code|aid-creator|relations|identifier"
+        excluded-paths: "/actuator"
+        show: true
+      response:
+        replacement: ""
+        delimiter: '\||'
+        fields: ""
+        patterns: ""
+        show: true

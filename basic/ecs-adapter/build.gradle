@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    implementation project(':basic:ecs-model')
+    implementation 'io.projectreactor:reactor-core:3.7.6'
+    implementation 'org.springframework:spring-context:6.2.7'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.4.5'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:3.4.5'
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+    testImplementation 'io.projectreactor:reactor-test:3.7.6'
+    testCompileOnly 'org.projectlombok:lombok:1.18.38'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
+    testImplementation 'org.xmlunit:xmlunit-core:2.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.12.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.12.2'
+    testImplementation 'org.mockito:mockito-core:5.17.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.17.0'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
