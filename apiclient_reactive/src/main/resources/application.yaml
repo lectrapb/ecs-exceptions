@@ -15,4 +15,4 @@ logging:
   level:
     io:
       r2dbc:
-        h2: trace
+        h2: error
