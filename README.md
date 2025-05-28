@@ -11,4 +11,4 @@ the level of exception.
 
 
 ## Requirements
-+ ***Java 17*** The basic example was build in this version of Java.  
++ ***Java 17*** The basic example was build in this version of  Java in base examples.  
