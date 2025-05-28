@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: "ms_ecs"
+  ecs:
+    logs:
+      request:
+        replacement: ""
+        patterns: ""
+        delimiter: ""
+        fields: ""
+        allow-headers: ""
+        excluded-paths: ""
+        show: false
+      response:
+        replacement: ""
+        delimiter: ""
+        fields: ""
+        patterns: ""
+        show: false
