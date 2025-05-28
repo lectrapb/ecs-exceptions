@@ -4,7 +4,7 @@ dependencies {
 	implementation project(':reactive-web')
     implementation project(':model')
     implementation project(':usecase')
-    implementation 'co.com.bancolombia:ecs-reactive:0.0.6'
+    implementation 'co.com.bancolombia:ecs-reactive:0.0.8-test'
     implementation 'org.springframework.boot:spring-boot-starter'
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation 'com.tngtech.archunit:archunit:1.4.0'

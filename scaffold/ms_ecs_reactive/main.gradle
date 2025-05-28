@@ -3,7 +3,6 @@ apply plugin: 'info.solidsoft.pitest.aggregator'
 allprojects {
     repositories {
         maven { url "https://artifactory.apps.bancolombia.com/maven-bancolombia" }
-//        mavenLocal()
     }
 }
 
@@ -41,7 +40,7 @@ subprojects {
         testAnnotationProcessor  "org.projectlombok:lombok:${lombokVersion}"
         implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
 
-        implementation 'co.com.bancolombia:ecs-model:0.0.6'
+        implementation 'co.com.bancolombia:ecs-model:0.0.8-test'
     }
 
     tasks.withType(Test).configureEach {

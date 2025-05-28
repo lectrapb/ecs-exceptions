@@ -5,7 +5,7 @@ dependencies {
 	implementation project(':api-rest')
     implementation project(':model')
     implementation project(':usecase')
-    implementation 'co.com.bancolombia:ecs-imperative:0.0.7'
+    implementation 'co.com.bancolombia:ecs-imperative:0.0.8-test'
     implementation 'org.springframework.boot:spring-boot-starter'
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     testImplementation 'com.tngtech.archunit:archunit:1.4.0'
